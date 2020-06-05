@@ -1,9 +1,9 @@
 #pragma once
 #include "Record.h"
-#define MaxTableSize 50
+#define MaxTableSize 200
 //enum for table states?
 //using namespace std;
-enum TableState {table_is_ok, table_is_empty, table_is_full, record_not_found, record_already_exists, not_enough_memory};
+enum class TableState {table_is_ok, table_is_empty, table_is_full, record_not_found, record_already_exists, not_enough_memory};
 
 class Table
 {
@@ -37,6 +37,7 @@ public:
 			os << "Key: " << tab.GetKey() << "  Value: " << tab.GetValue() << std::endl;
 		return os;
 	}
+	//virtual void PrintTable() = 0;
 	/*
 	void Print(System::Windows::Forms::DataGridView^ grid) {
 		grid->ColumnCount = 2;

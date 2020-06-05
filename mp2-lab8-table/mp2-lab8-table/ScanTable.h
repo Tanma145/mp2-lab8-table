@@ -1,6 +1,7 @@
 #pragma once
 #include "ArrayTable.h"
-//в SortTable должно быть минимум два метода сортировки: n^2 и n*log(n)
+#include "SortTable.h"
+
 class ScanTable : public ArrayTable {
 public:
 	ScanTable(int size = MaxTableSize) : ArrayTable(size) {}

@@ -1,7 +1,11 @@
 #include "SortTable.h"
 
+SortTable::SortTable(TableRecord* recs, int s): ArrayTable(s){
+	for (Reset(); !IsEnd(); GoNext())
+		pRecords[CurrentPosition] = recs[CurrentPosition];
+}
+
 bool SortTable::FindRecord(TKey key){
-	Efficiency = 0;
 	int start = 0;
 	int finish = DataCount - 1;
 	int mid = (finish + start) / 2;
@@ -32,6 +36,7 @@ TableState SortTable::InsRecord(TKey k, TValue v){
 		TableRecord tmp2(k, v);
 		DataCount++;
 		for (; !IsEnd(); GoNext()) {
+			Efficiency++;
 			tmp1 = GetRecord();
 			pRecords[CurrentPosition] = tmp2;
 			tmp2 = tmp1;
@@ -48,6 +53,7 @@ TableState SortTable::DelRecord(TKey key){
 	if (DataCount > 0) {
 		GoNext();
 		for (; !IsEnd(); GoNext()) {
+			Efficiency++;
 			pRecords[CurrentPosition-1] = pRecords[CurrentPosition];
 		}
 		DataCount--;

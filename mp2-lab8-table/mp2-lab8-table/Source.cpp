@@ -4,6 +4,8 @@
 #include <ctime>
 #include "ScanTable.h"
 #include "SortTable.h"
+#include "HashTable.h"
+#include "TreeTable.h"
 
 using namespace std;
 
@@ -12,16 +14,13 @@ enum class TableType { scan_table, sort_table, array_hash_table, list_hash_table
 
 int main() {
 	Table* pTable = nullptr;
-	vector<TKey> Keys;
-	vector<TValue> Values;
 	int DataCount = 0;
 	int MemSize;
 	int MaxKeyValue;
 	int tableType;
 	char Line[100];
-	TableState RetCode;
 
-	cout << "Select table type (1 - scan, 2 - sort, 3 - array_hash, 4 - list_hash, 5 - tree)" << endl;
+	cout << "Select table type (1 - scan, 2 - sort, 3 - hash, 4 - tree)" << endl;
 	cin >> tableType;
 	cout << "Enter number of records" << endl;
 	cin >> DataCount;
@@ -37,31 +36,24 @@ int main() {
 		pTable = new SortTable[MemSize];
 		break;
 	case 3:
+		pTable = new HashTable[MemSize * 3];
 		break;
 	case 4:
-		break;
-	case 5:
+		pTable = new TreeTable[MemSize];
 		break;
 	}
-	Keys.resize(MemSize);
-	Values.resize(MemSize);
 	srand(time(0));
-	for (int i = 0; i < DataCount; i++) {
+	while (pTable->GetDataCount() < DataCount){
 		int tmp = ((double)rand() / (double)RAND_MAX) * MaxKeyValue;
-		sprintf(Line, "%d", tmp);
-		Keys[i] = tmp;
-		Values[i] = "*";
-		Values[i] += Line;
-		Values[i] += "*";
 
-		RetCode = pTable->InsRecord(Keys[i], Values[i]);
-		if (RetCode != TableState::table_is_ok) {
-			string message = "RetCode" +  RetCode;
-			if (RetCode == TableState::record_already_exists)
-				message = "Record already exists";
-		}
+		sprintf(Line, "%d", tmp);
+		string value = "*";
+		value += Line;
+		value += "*";
+
+		pTable->InsRecord(tmp, value);
 	}
-	cout << *pTable << endl << "Efficiency: " << pTable->GetEfficiency() << endl << endl;
+	cout << *pTable << endl << endl << "Efficiency: " << pTable->GetEfficiency() << endl << endl;
 
 	int choice, key;
 	string tmp, resultString;
@@ -69,15 +61,20 @@ int main() {
 	TableState tableState;
 	while (true) {
 		cout << "1 - find record, 2 - insert record, 3 - delete record" << endl;
+		if (tableType == 4) cout << "4 - print tree" << endl;
 		cin >> choice;
-		cout << "Enter key" << endl;
-		cin >> key;
 		switch (choice) {
 		case 1:
+			cout << "Enter key" << endl;
+			cin >> key;
+			pTable->ClearEfficiency();
 			res = pTable->FindRecord(key);
 			resultString = (res ? "Record found" : "Record not found");
 			break;
 		case 2:
+			cout << "Enter key" << endl;
+			cin >> key;
+			pTable->ClearEfficiency();
 			tmp = "*";
 			tmp += to_string(key);
 			tmp += "*";
@@ -96,6 +93,9 @@ int main() {
 			}
 			break;
 		case 3:
+			cout << "Enter key" << endl;
+			cin >> key;
+			pTable->ClearEfficiency();
 			tableState = pTable->DelRecord(key);
 
 			switch (tableState) {
@@ -110,6 +110,11 @@ int main() {
 				break;
 			}
 			break;
+		case 4:
+			pTable->ClearEfficiency();
+			((TreeTable*) pTable)->PrintTable(cout);
+			_getch();
+			break; 
 		}
 		system("cls");
 		cout << *pTable << endl << resultString << endl << endl << "Efficiency: " << pTable->GetEfficiency() << endl << endl;

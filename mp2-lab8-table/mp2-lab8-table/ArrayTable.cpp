@@ -3,7 +3,7 @@
 ArrayTable::ArrayTable(int size = MaxTableSize){
 	pRecords = new TableRecord[size];
 	TableSize = size;
-	DataCount = CurrentPosition = 0;
+	DataCount = CurrentPosition = Efficiency = 0;
 }
 
 ArrayTable::~ArrayTable(){
@@ -46,7 +46,7 @@ TValue ArrayTable::GetValue(PositionMode mode = PositionMode::current) const{
 	case PositionMode::current:
 		return pRecords[CurrentPosition].Value;
 	case PositionMode::last:
-		return pRecords[DataCount].Value; //mb -1?
+		return pRecords[DataCount].Value;
 	}
 }
 
